@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  nginx-proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: NGINX-proxy-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'         # HTTP port
+      - '443:443'       # HTTPS port
+      - '81:81'         # Admin port
+    environment:
+      DB_MYSQL_HOST: database       # Hostname or network alias of the MariaDB container
+      DB_MYSQL_PORT: 3306           # Default MariaDB port
+      DB_MYSQL_USER: <DB_USER>      # Database user for NGINX Proxy Manager
+      DB_MYSQL_PASSWORD: <DB_PASS>  # Password for the database user
+      DB_MYSQL_NAME: <DB_NAME>      # Database name used by NGINX Proxy Manager
+    volumes:
+      - '/path/to/nginx-proxy-manager/data:/data'          # Persistent storage for NGINX Proxy Manager data
+      - '/path/to/nginx-proxy-manager/letsencrypt:/etc/letsencrypt'  # Storage for Let's Encrypt certificates
+    networks:
+      - webnet-network
+
+networks:
+  webnet-network:
+    external: true
